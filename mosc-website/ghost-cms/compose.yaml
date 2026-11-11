@@ -1,0 +1,44 @@
+
+services:
+  db:
+    image: mysql:8.0.36
+    container_name: ghost-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ghost
+      MYSQL_USER: ghost
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  ghost:
+    image: ghost:6.75.0-alpine3.23
+    container_name: ghost-cms
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:2368"
+    environment:
+      NODE_ENV: development
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: ghost
+      database__connection__password: ${MYSQL_PASSWORD}
+      database__connection__database: ghost
+      url: http://localhost:8081
+      mail__transport: SMTP
+      mail__options__host: smtp.gmail.com
+      mail__options__port: 465
+      mail__options__secure: "true"
+      mail__options__auth__user: ${MAIL_USER}
+      mail__options__auth__pass: ${MAIL_PASSWORD}
+      mail__from: ${MAIL_USER}
+    volumes:
+      - ghost_content:/var/lib/ghost/content
+      - ./docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh:ro
+
+volumes:
+  mysql_data:
+  ghost_content:
