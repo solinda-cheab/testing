@@ -12,7 +12,7 @@ Ghost Admin for the instance you want to use, open **Settings → Integrations**
 add an integration, and copy its **Content API Key**. Do not use the admin
 password as the API key.
 
-For local development with Ghost running on your computer,
+To load real posts from a local Ghost instance,
 `mosc-website/.env.local` should contain:
 
 ```dotenv
@@ -20,12 +20,14 @@ GHOST_URL=http://localhost:8081
 GHOST_CONTENT_API_KEY=your-content-api-key
 ```
 
-Get the Content API key from an integration in your local Ghost Admin. The
-local instance can be started with Docker Compose from `ghost-cms`.
+Get the Content API key from an integration in your local Ghost Admin. Start
+the local instance with Docker Compose from `ghost-cms`. If Ghost is not
+running or either variable is missing, local development uses sample posts so
+you can still preview the site.
 
 Run `npm run dev` to view the site, or `npm run build` to generate the static
-export in `out`. Both Ghost variables are required, and at least one published
-post is needed to generate the static post routes.
+export in `out`. For the export to contain real posts, Ghost must be reachable
+with both variables configured and have at least one published post.
 
 The Content API key is read only during server-side rendering/build and is not
 embedded in the browser bundle.
